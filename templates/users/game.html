@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>{{game.id}}</h1>
+{{ game.white }}
+{{game.black}}
+<ct-pgn-viewer>
+  {{game.pgn}}
+  </ct-pgn-viewer>
+
+{% if user.id == game.user_id %}
+<a href="/games/game/{{game.id}}/edit" class="btn btn-primary">Edit Game</a>
+{% endif %}
+
+{% include 'footer.html' %}
+
+{% endblock %}
+

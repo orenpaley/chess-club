@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block content %}
+<ul>
+  {% for game in games %}
+  <li>
+    {{game.id}}
+    {{ game.white }}
+    {{game.black}}
+      {{game.pgn}}
+
+    <form action="/games/{{game.id}}/edit">
+      <button>Edit Me</button>
+    </form>
+  </li>
+  {% endfor %} 
+</ul>
+
+
+<form action="/games/new">
+  <button action="/games/new">Add A Game</button>
+</form>
+
+
+
+{% endblock %}

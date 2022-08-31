@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block content %} {% if users|length == 0 %}
+Sorry, no users found
+
+{% else %}
+{% for user in users %}
+
+  {{user.id}}
+  {{ user.username }}
+  {{user.email}}
+
+  <img src={{user.image_url}} width="80px">
+
+{% if user.bio %}
+{{user.bio}}
+{% endif %}
+
+{% endfor %}
+{% endif %} {% endblock %}
