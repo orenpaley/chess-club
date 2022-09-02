@@ -1,22 +1,28 @@
 {% extends 'base.html' %} {% block content %}
-<ul>
-  {% for game in games %}
-  <li>
-    {{game.id}}
-    {{ game.white }}
-    {{game.black}}
-      {{game.pgn}}
 
-    <form action="/games/{{game.id}}/edit">
-      <button>Edit Me</button>
-    </form>
-  </li>
+  {% for game in games %}
+  <div class="card w-75 mx-auto">
+    <!-- <img src="..." class="card-img-top" alt="..."> -->
+    <div class="card-body">
+      <h5 class="card-title">{{user.username}}</h5>
+      <p class="card-text">
+        <ct-pgn-viewer board-actions-menu-direction="under">
+        {{game.pgn}}
+        </ct-pgn-viewer></p>
+      <a href="/games/game/{{game.id}}" class="btn btn-primary">View Game</a>
+      <a href="/games/game/{{game.id}}/edit" class="btn btn-secondary">Edit Game</a>
+     <form method="post" action="/games/game/{{game.id}}/delete">
+        <button class="btn btn-danger">Delete Game</button>
+      </form>
+    </div>
+  </div>
+
+
   {% endfor %} 
-</ul>
 
 
 <form action="/games/new">
-  <button action="/games/new">Add A Game</button>
+  <button class="btn btn-success" action="/games/new">Add A Game</button>
 </form>
 
 

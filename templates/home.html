@@ -1,40 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- ### NAV ### -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Chess Club</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="#">Friends</a>
-      <a class="nav-item nav-link" href="/games/{{user.id}}">My Games</a>
-      <a class="nav-item nav-link" href="/games/new">Make A Post</a>
-      <a class="nav-item nav-link" href="#">Settings</a>
-      <a class="nav-item nav-link" href="/logout">Logout</a>
-    </div>
-  </div>
-</nav>
-
 {% for game in games %}
-<div class="card w-50 mx-auto">
-  <img src="..." class="card-img-top" alt="...">
+<div class="card w-75 mx-auto">
   <div class="card-body">
-    <h5 class="card-title">{{game.id}}</h5>
+    <h5 class="card-title">Game ID: {{game.id}}</h5>
     <p class="card-text">
       <ct-pgn-viewer board-actions-menu-direction="under">
       {{game.pgn}}
       </ct-pgn-viewer></p>
     <a href="/games/game/{{game.id}}" class="btn btn-primary">View Game</a>
   </div>
+
+  {% if game.user_id == user.id %}
+  <div class="card-body">
+    <form method="post" action="/games/game/{{game_id}}/delete>">
+      <button class='btn btn-danger'>Delete Game</button>
+    </form>
+  </div>
+  {% endif %}
   <div class="card-body">
     <h5>Posted By {{game.users.username}}</h5>
-    <form method="post" action="/games/game/{{game_id}}/delete>">
-      <button>Delete Game</button>
-    </form>
 </div>
 </div>
 

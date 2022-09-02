@@ -9,6 +9,9 @@
 
 {% if user.id == game.user_id %}
 <a href="/games/game/{{game.id}}/edit" class="btn btn-primary">Edit Game</a>
+<form method="post" action="/games/game/{{game.id}}/delete">
+  <button class="btn btn-danger">Delete Game</button>
+</form>
 {% endif %}
 
 {% include 'footer.html' %}

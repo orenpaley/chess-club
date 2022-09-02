@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from forms import PostGameExtractedForm, RegisterForm, LoginForm, PostGameForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
-from models import db, connect_db, User, Game
+from models import db, connect_db, User, Game, Like
 
 CURR_USER_KEY = "curr_user"
 
@@ -168,9 +168,6 @@ def list_users():
 ####################################################################
 ### GAME ROUTES ####
 
-##############################################################################
-# Messages routes:
-
 @app.route('/games/<user_id>/')
 def show_user_games(user_id):
     """button to add a new game at top. 
@@ -181,7 +178,7 @@ def show_user_games(user_id):
         return redirect("/")
 
     user = User.query.get_or_404(user_id)
-    games = Game.query.filter(Game.user_id == user_id)
+    games = Game.query.filter(Game.user_id == user_id).all()
 
     return render_template('users/games.html', user=user, games=games)
 
@@ -197,11 +194,11 @@ def show_game(game_id):
 
 @app.route('/games/game/<game_id>/delete', methods=['POST'])
 def delete_game(game_id):
-    """delete a game if user posted game"""
+    """delete a game by user"""
 
     game = Game.query.get_or_404(game_id)
-    if g.user_id == game.user_id:
-        del game
+    if g.user.id == game.user_id:
+        db.session.delete(game)
         db.session.commit()
         
         flash('game deleted', 'danger')
@@ -209,6 +206,21 @@ def delete_game(game_id):
     else:
         flash('Access unauthorized.', 'danger')
         return redirect("/")
+
+@app.route('/games/game/<game_id>/edit', methods=['GET', 'POST'])
+def edit_game(game_id):
+    """ Edit a pgn that has been posted by user"""
+    game = Game.query.get_or_404(game_id)
+    form = PostGameForm(obj=game)
+
+    if form.validate_on_submit():
+        game.pgn = form.pgn.data
+        db.session.commit()
+        
+        flash('pgn updated', 'success')
+        return redirect(f'/games/game/{game_id}')
+
+    return render_template('users/post_game.html', form=form, user=g.user)
 
 
 @app.route('/games/new', methods=['GET', 'POST'])
@@ -232,3 +244,27 @@ def add_game():
 
     return render_template('users/post_game.html', form=form, user=g.user)
 
+
+####################################################################
+### LIKE ROUTES ####
+
+@app.route('/users/add_like/<game_id>', methods=['POST'])
+def user_add_like(game_id):
+    if g.user:
+        like = Like(user_id = g.user.id, game_id = game_id)
+
+        if like in Like.query.all():
+            db.session.delete(like)
+            db.session.commit()
+            
+            flash('like removed', 'danger')
+            return request.referrer
+
+        db.sesssion.add(like)
+        db.session.commit()
+
+        flash('post liked', 'success')
+        return request.referrer
+
+    flash('unauthorized', 'danger')
+    return redirect('/')

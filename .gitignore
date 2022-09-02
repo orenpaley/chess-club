@@ -1,3 +1,7 @@
 venv
 __pycache__
 proposals.md
+node_modules
+chess.js
+package.json
+package-lock.json
