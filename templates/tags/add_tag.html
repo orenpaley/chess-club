@@ -3,7 +3,7 @@
 
   <div class="row justify-content-md-center">
   <div class="col-md-7 col-lg-5">
-    <h2 class="Login!">Login!</h2>
+    <h2 class="Login!">Add A Tag</h2>
     <form method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
@@ -14,10 +14,8 @@
         {{ field(placeholder=field.label.text, class="form-control") }}
       {% endfor %}
 
-      <button class="btn btn-primary btn-lg btn-block">Continue</button>
+      <button class="btn btn-primary btn-lg btn-block">Add Tag</button>
     </form>
-    <br></br>
-    <h4> New To Chess Club? <a href="/signup">Register and get started!</a></h4>
   </div>
 </div>
 

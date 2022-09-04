@@ -98,7 +98,8 @@ class User(db.Model):
 
     likes = db.relationship(
         'Game',
-        secondary="likes"
+        secondary="likes",
+        backref='games'
     )
 
     games = db.relationship(
@@ -150,6 +151,11 @@ class User(db.Model):
 
         return False
 
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('game_id', db.Integer, db.ForeignKey('games.id'), primary_key=True)
+)
+
 class Game(db.Model):
     """Each chess Game that has been uploaded or posted"""
 
@@ -194,8 +200,23 @@ class Game(db.Model):
 
     result = db.Integer()
 
-   
+    likes = db.relationship('Like', backref='games')
+    
+    tags = db.relationship(
+    'Tag', secondary=tags, backref='games'
+)
+class Tag(db.Model):
+    
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
+    name = db.Column(
+        db.String(50),
+        nullable=False, 
+        unique=True
+    )
 
 def connect_db(app):
     """initialize app """

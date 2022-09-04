@@ -5,10 +5,10 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import PostGameExtractedForm, RegisterForm, LoginForm, PostGameForm
+from forms import PostGameExtractedForm, RegisterForm, LoginForm, PostGameForm, TagForm, TagsGameForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
-from models import db, connect_db, User, Game, Like
+from models import db, connect_db, User, Game, Like, Tag
 
 CURR_USER_KEY = "curr_user"
 
@@ -120,11 +120,14 @@ def logout():
 ##############################################################################
 ## HOME ROUTE ###
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def home():
+
     if g.user:
-        games = Game.query.all()
-        return render_template("home.html", user=g.user, games=games)
+            games = Game.query.all()
+            tags = Tag.query.all()
+            return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
     return redirect('/signup')
 
 
@@ -248,23 +251,59 @@ def add_game():
 ####################################################################
 ### LIKE ROUTES ####
 
-@app.route('/users/add_like/<game_id>', methods=['POST'])
-def user_add_like(game_id):
+@app.route('/users/add_delete_like/<game_id>', methods=['POST'])
+def user_add_delete_like(game_id):
     if g.user:
-        like = Like(user_id = g.user.id, game_id = game_id)
+        for like in g.user.likes:
+            if int(like.id) == int(game_id):
+                like_to_delete = Like.query.filter(Like.game_id==game_id and Like.user_id==g.user.id).first()
+                db.session.delete(like_to_delete)
+                db.session.commit()
 
-        if like in Like.query.all():
-            db.session.delete(like)
-            db.session.commit()
+                flash('like removed', 'danger')
+                return redirect(request.referrer)
             
-            flash('like removed', 'danger')
-            return request.referrer
-
-        db.sesssion.add(like)
+    
+        new_like = Like(user_id=g.user.id, game_id=game_id)
+        db.session.add(new_like)
         db.session.commit()
 
         flash('post liked', 'success')
-        return request.referrer
+        return redirect(request.referrer)
 
     flash('unauthorized', 'danger')
     return redirect('/')
+
+####################################################################
+### Tag Routes ####
+
+@app.route('/tags')
+def show_tags():
+    if g.user:
+        tags = Tag.query.all()
+        return render_template('tags/tags.html', tags=tags)
+
+    flash('access unauthorized', 'danger')   
+    return redirect ('/')
+
+@app.route('/tags/new', methods=['GET', 'POST'])
+def add_tag():
+
+    if g.user:
+        form = TagForm()
+        if not form.validate_on_submit():
+            return render_template('tags/add_tag.html', form=form)
+        
+        if form.validate_on_submit():
+            name = form.name.data
+            tag = Tag(name=name)
+
+            db.session.add(tag)
+            db.session.commit()
+
+
+
+            return redirect('/tags')
+
+
+        
