@@ -34,7 +34,20 @@ class Like(db.Model):
         unique=True
     )
 
+class GameUserTag(db.Model):
 
+    __tablename__ = 'game_user_tags'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)
+    tag_id = db.Column(db.Integer, db.ForeignKey("tags.id"), nullable=False)
+
+    __table_args__ = (db.UniqueConstraint(user_id, game_id, tag_id),)
+
+    users = db.relationship("User")
+    tags = db.relationship("Tag")
+    games = db.relationship("Game")
 
 
 class User(db.Model):
@@ -106,6 +119,8 @@ class User(db.Model):
         'Game', backref='users'
     )
 
+    game_user_tags = db.relationship("GameUserTag")
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -150,16 +165,10 @@ class User(db.Model):
                 return user
 
         return False
-
-tags = db.Table('tags',
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
-    db.Column('game_id', db.Integer, db.ForeignKey('games.id'), primary_key=True)
-)
-
 class Game(db.Model):
     """Each chess Game that has been uploaded or posted"""
 
-    __tablename__ = "games"
+    __tablename__ = 'games'
 
     id = db.Column(
         db.Integer,
@@ -201,11 +210,14 @@ class Game(db.Model):
     result = db.Integer()
 
     likes = db.relationship('Like', backref='games')
+   
+    game_user_tags = db.relationship("GameUserTag")
+
     
-    tags = db.relationship(
-    'Tag', secondary=tags, backref='games'
-)
+
 class Tag(db.Model):
+
+    __tablename__ = 'tags'
     
     id = db.Column(
         db.Integer,

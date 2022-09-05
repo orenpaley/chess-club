@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from forms import PostGameExtractedForm, RegisterForm, LoginForm, PostGameForm, TagForm, TagsGameForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
-from models import db, connect_db, User, Game, Like, Tag
+from models import db, connect_db, User, Game, Like, Tag, GameUserTag
 
 CURR_USER_KEY = "curr_user"
 
@@ -126,6 +126,7 @@ def home():
     if g.user:
             games = Game.query.all()
             tags = Tag.query.all()
+
             return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
 
     return redirect('/signup')
@@ -304,6 +305,25 @@ def add_tag():
 
 
             return redirect('/tags')
+
+
+@app.route("/games/game/<game_id>/tag", methods=['POST'])
+def tag_game(game_id):
+
+    if g.user:
+        print('TAGGING')
+        tag_id = int(request.form.get('tags'))
+        user_id = g.user.id
+
+        gameUserTag = GameUserTag(user_id=user_id, game_id=game_id, tag_id=tag_id)
+        db.session.add(gameUserTag)
+        db.session.commit()
+
+        flash('post tagged', 'success')
+        return redirect(request.referrer)
+    
+    flash('access unauthorized')
+    return redirect(request.referrer)
 
 
         
