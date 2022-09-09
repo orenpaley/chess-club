@@ -83,13 +83,7 @@ nav form.navbar-form {
 }
 
 #search.form-control + .btn {
-  position: absolute;
-  right: 9px;
-  top: 2px;
-  bottom: 4px;
-  z-index: 1;
-  padding: 0;
-  color: #66757f;
+  color: #ced9e1;
 }
 
 #search.form-control + .btn:active,
@@ -101,6 +95,10 @@ nav form.navbar-form {
 #search:focus {
   box-shadow: none;
   border: 2px solid #007bff;
+}
+
+.search-button {
+  color: white
 }
 
 /* on "onboarding" pages (signup & login), the navbar is
@@ -547,4 +545,8 @@ p.card-bio {
 
 .btn-success {
   background-color: lightgreen;
+}
+
+#likeCounter {
+  margin-left: 16px;
 }

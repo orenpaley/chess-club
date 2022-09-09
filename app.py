@@ -5,7 +5,11 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import PostGameExtractedForm, RegisterForm, LoginForm, PostGameForm, TagForm, TagsGameForm
+import requests
+
+from datetime import datetime
+
+from forms import RegisterForm, LoginForm, PostGameForm, TagForm, TagsGameForm, SearchGamesForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
 from models import db, connect_db, User, Game, Like, Tag, GameUserTag
@@ -127,11 +131,12 @@ def home():
             games = Game.query.all()
             tags = Tag.query.all()
 
+       
             return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
 
     return redirect('/signup')
 
-
+ 
 ##############################################################################
 ## Users ###
 
@@ -239,41 +244,110 @@ def add_game():
 
     if form.validate_on_submit():
         pgn = form.pgn.data
-        game = Game(pgn=pgn, user_id=g.user.id)
+        title = form.title.data
+        game = Game(pgn=pgn, user_id=g.user.id, title=title)
 
         db.session.add(game)
         db.session.commit()
 
+        flash('game added')
         return redirect(f'/games/{g.user.id}')
 
     return render_template('users/post_game.html', form=form, user=g.user)
+
+@app.route('/games/find', methods=['GET', 'POST'])
+def find_games():
+    
+    form = SearchGamesForm()
+    if form.validate_on_submit():
+        print('form validating')
+
+        base_url = 'https://api.chess.com/pub/player/'
+        footer_url = f'/games/{datetime.now().year}/{datetime.now().strftime("%m")}'
+        username = form.search.data
+        url = f'{base_url}{username}{footer_url}'
+
+        resp = requests.get(url=url)
+        data = resp.json()
+        json_games= data['games']
+    
+        return render_template('users/search_games.html', json_games=json_games)
+
+    return render_template('users/find_games.html', form=form, user=g.user)
+
+@app.route('/games/import', methods=['GET', 'POST'])
+def import_game():
+    pgn_data = request.form['pgn']
+
+    game = Game(pgn=pgn_data)
+    form = PostGameForm(obj=game)
+
+    if form.validate_on_submit():
+     
+        pgn = form.pgn.data
+        title = form.title.data
+        game = Game(pgn=pgn, user_id=g.user.id, title=title)
+        db.session.add(game)
+        db.session.commit()
+
+        flash('imported game posted')
+        return redirect('/')
+
+
+    return render_template('users/post_game.html', form=form, user=g.user)
+
 
 
 ####################################################################
 ### LIKE ROUTES ####
 
-@app.route('/users/add_delete_like/<game_id>', methods=['POST'])
-def user_add_delete_like(game_id):
+@app.route('/likes')
+def show_user_likes():
+    breakpoint()
+    games = g.user.likes
+    return render_template ('home.html', games=games, user=g.user, likes = g.user.likes)
+
+
+
+@app.route('/users/delete_like/<game_id>', methods=['POST'])
+def delete_like(game_id):
     if g.user:
-        for like in g.user.likes:
-            if int(like.id) == int(game_id):
-                like_to_delete = Like.query.filter(Like.game_id==game_id and Like.user_id==g.user.id).first()
-                db.session.delete(like_to_delete)
+        for like in Like.query.all():
+            if int(like.game_id) == int(game_id) and int(like.user_id) == int(g.user.id):
+
+                db.session.delete(like)
                 db.session.commit()
 
                 flash('like removed', 'danger')
                 return redirect(request.referrer)
-            
-    
-        new_like = Like(user_id=g.user.id, game_id=game_id)
-        db.session.add(new_like)
-        db.session.commit()
-
-        flash('post liked', 'success')
+        
+        flash('you havent liked this post')
         return redirect(request.referrer)
 
     flash('unauthorized', 'danger')
     return redirect('/')
+
+@app.route('/users/add_like/<game_id>', methods=['POST'])
+def add_like(game_id):
+    if g.user:
+        counter = 0
+        for like in Like.query.all():
+            if int(like.game_id) == int(game_id) and int(like.user_id) == int(g.user.id):
+                counter += 1
+
+        if counter < 1:
+            new_like = Like(user_id = g.user.id, game_id = game_id )
+            db.session.add(new_like)
+            db.session.commit()
+            flash('post liked', 'success')
+            return redirect(request.referrer)
+        else:
+            flash('You already liked this post')
+            return redirect(request.referrer)
+    flash('acesss unauthorized')
+    return redirect('/')
+
+  
 
 ####################################################################
 ### Tag Routes ####
@@ -326,4 +400,28 @@ def tag_game(game_id):
     return redirect(request.referrer)
 
 
-        
+@app.route('/games/search_by_tag')
+def search_by_tag():
+    tag_id = request.args['tag_id']
+    games = []
+
+    for game in Game.query.all():
+  
+        for item in game.game_user_tags:
+            if int(tag_id) == item.tag_id:
+                games.append(game)
+                break
+    return render_template('home.html', games=games, user = g.user)
+
+    
+####################################################################
+### Modal Popups ####
+
+@app.route('/modal')
+def show_modal():
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+                
+        return render_template("modal.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+  

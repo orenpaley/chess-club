@@ -2,7 +2,7 @@
 
 <div class="row justify-content-md-center">
   <div class="col-md-7 col-lg-5">
-    <h2 class="Login!">Post A Chess Game</h2>
+    <h2 class="Login!">Search Games via chesscom users</h2>
     <form method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
@@ -13,7 +13,7 @@
         {{ field(placeholder=field.label.text, class="form-control") }}
       {% endfor %}
 
-      <button class="btn btn-warning">Import/Update PGN</button>
+      <button class="btn btn-primary search-button">Search</button>
     </form>
 </div>
 </div>

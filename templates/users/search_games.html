@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block content %}
+
+<form action="/games/import" method="post">
+{% for game in json_games %}
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="pgn" id="flexRadioDefault1" value="{{game['pgn']}}">
+  <label class="form-check-label" for="flexRadioDefault1">
+    {{game['white']['username']}} vs {{game['black']['username']}}</li>
+<ct-pgn-viewer board-actions-menu-direction="under">
+  {{game['pgn']}}
+  </ct-pgn-viewer>
+  </label>
+</div>
+{% endfor %}
+<button type="submit">Submit</button>
+</form>
+
+{% endblock %}

@@ -1,10 +1,29 @@
+console.log("JAVASCRIPT IS HERE!!")
+
+$(document).ready(function(){
+  $('.tag-info').click(function(){
+    console.log('TAG CLICKED!!!!!')
+    window.alert('Tag clicked')
+  });
+ 
+})
+
+
+
+
+
 // import { Chess } from 'chess.js'
 
 // const chess = new Chess()
 
-console.log("JAVASCRIPT IS HERE!!")
 
-// pgn = [
+
+// $('#game-tag').click(function(){
+//   console.log('TAG CLICKED!!!!!')
+//   window.confirm('Are you sure you want to tag this post')
+// })
+
+// // pgn = [
 // '[Event "Nova Gorica op 5th"]',
 // '[Site "Nova Gorica SLO"]',
 // '[Date "2000.02.08"]',
@@ -34,3 +53,4 @@ console.log("JAVASCRIPT IS HERE!!")
 // game = chess.load_pgn(pgn)
 
 // console.log(game)
+

@@ -28,7 +28,7 @@ class LoginForm(FlaskForm):
 
 class PostGameForm(FlaskForm):
   "form for user to post a chess game"
-
+  title = StringField('Title', validators=[DataRequired()])
   pgn = TextAreaField('Copy your PGN text here', validators=[DataRequired()])
 
 class PostGameExtractedForm(FlaskForm):
@@ -49,6 +49,10 @@ def add_form_tag(request, id):
   tag = Tag.query.get(id)
   form = TagsGameForm(request.POST, obj=tag)
   form.tag_id.choices = [(t.id, t.name) for t in Tag.query.order_by('name')]
+
+class SearchGamesForm(FlaskForm):
+  search = TextAreaField('Search chess.com users', validators=[DataRequired()])
+
 
 
 

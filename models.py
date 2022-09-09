@@ -25,14 +25,15 @@ class Like(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
+        db.ForeignKey('users.id', ondelete='cascade'),
     )
 
     game_id = db.Column(
         db.Integer,
-        db.ForeignKey('games.id', ondelete='cascade'),
-        unique=True
+        db.ForeignKey('games.id', ondelete='cascade')
     )
+    
+    __table_args__ = (db.UniqueConstraint(user_id, game_id),)
 
 class GameUserTag(db.Model):
 
@@ -180,6 +181,10 @@ class Game(db.Model):
         db.ForeignKey('users.id', ondelete='cascade')
     )
 
+    title = db.Column(
+        db.Text, 
+        nullable=False)
+
     pgn = db.Column(
         db.Text, 
         nullable=False
@@ -212,9 +217,6 @@ class Game(db.Model):
     likes = db.relationship('Like', backref='games')
    
     game_user_tags = db.relationship("GameUserTag")
-
-    
-
 class Tag(db.Model):
 
     __tablename__ = 'tags'
