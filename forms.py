@@ -1,7 +1,9 @@
 
 from tokenize import String
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FieldList, FormField, SelectField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FieldList, FormField, SelectField, widgets, SelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 from wtforms.validators import DataRequired, Email, Length
 from models import Tag
 
@@ -25,34 +27,14 @@ class LoginForm(FlaskForm):
   username = StringField('Username', validators=[DataRequired()])
   password = PasswordField('Password', validators=[Length(min=6)])
 
-
 class PostGameForm(FlaskForm):
   "form for user to post a chess game"
   title = StringField('Title', validators=[DataRequired()])
   pgn = TextAreaField('Copy your PGN text here', validators=[DataRequired()])
 
-class PostGameExtractedForm(FlaskForm):
-  "form for user to post a chess game"
-
-  event = StringField('Event Name (Optional)')
-  white = StringField('White Player Name')
-  black = StringField('Black Player Name')
-  result = IntegerField()
-
 class TagForm(FlaskForm):
   name = StringField('Tag Name', validators=[DataRequired(), Length(max=50)])
 
-class TagsGameForm(FlaskForm):
-  tag_id = SelectField(u'Tag', coerce=int)
-
-def add_form_tag(request, id):
-  tag = Tag.query.get(id)
-  form = TagsGameForm(request.POST, obj=tag)
-  form.tag_id.choices = [(t.id, t.name) for t in Tag.query.order_by('name')]
-
 class SearchGamesForm(FlaskForm):
-  search = TextAreaField('Search chess.com users', validators=[DataRequired()])
-
-
-
+  search = StringField('Search chess.com users', validators=[DataRequired()])
 

@@ -10,9 +10,6 @@ bcrypt = Bcrypt()
 db = SQLAlchemy()
 
 
-
-
-
 class Like(db.Model):
     """Mapping user likes to warbles."""
 
@@ -35,22 +32,39 @@ class Like(db.Model):
     
     __table_args__ = (db.UniqueConstraint(user_id, game_id),)
 
-class GameUserTag(db.Model):
 
-    __tablename__ = 'game_user_tags'
+class GameTag(db.Model):
+    """stores a game tag pair"""
+
+    __tablename__ = 'game_tags'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)
     tag_id = db.Column(db.Integer, db.ForeignKey("tags.id"), nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)
 
-    __table_args__ = (db.UniqueConstraint(user_id, game_id, tag_id),)
+    __table_args__ = (db.UniqueConstraint(game_id, tag_id),)
+
+    game_tag_likes = db.relationship("GameTagLikes")
+    tags = db.relationship("Tag")
+
+class GameTagLikes(db.Model):
+    """ automatically gets added to if already present in game tag table"""
+
+    __tablename__ = 'game_tag_likes'
+    id = db.Column(db.Integer, primary_key=True)
+    game_tag_id = db.Column(db.Integer, db.ForeignKey("game_tags.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    __table_args__ = (db.UniqueConstraint(game_tag_id, user_id),)
 
     users = db.relationship("User")
-    tags = db.relationship("Tag")
-    games = db.relationship("Game")
 
-
+### SPLIT GAME USER TAG TABLE 
+## GAME_TAG_LIKES
+    ### game_tag_id
+    ### user_id (user who liked it)
+## GAME_TAG_TABLE
+    ### tag_id
+    ### game_id
 class User(db.Model):
     """User in the system."""
 
@@ -120,7 +134,6 @@ class User(db.Model):
         'Game', backref='users'
     )
 
-    game_user_tags = db.relationship("GameUserTag")
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -216,7 +229,7 @@ class Game(db.Model):
 
     likes = db.relationship('Like', backref='games')
    
-    game_user_tags = db.relationship("GameUserTag")
+    game_tags = db.relationship("GameTag")
 class Tag(db.Model):
 
     __tablename__ = 'tags'
@@ -231,6 +244,7 @@ class Tag(db.Model):
         nullable=False, 
         unique=True
     )
+
 
 def connect_db(app):
     """initialize app """

@@ -550,3 +550,32 @@ p.card-bio {
 #likeCounter {
   margin-left: 16px;
 }
+
+ct-pgn-viewer.ct-pgn-viewer move-list {
+  height: 55px;
+
+
+  /* Does the magic */
+  overflow : hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* Adds the ... */
+}
+
+.ct-pgn-viewer-move-list-and-controls {
+  margin: auto;
+}
+
+.ct-pgn-viewer {
+  position: relative;
+  left: -95px;
+}
+
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+textarea {
+  height: 250px;
+}

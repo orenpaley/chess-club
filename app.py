@@ -9,10 +9,10 @@ import requests
 
 from datetime import datetime
 
-from forms import RegisterForm, LoginForm, PostGameForm, TagForm, TagsGameForm, SearchGamesForm
+from forms import RegisterForm, LoginForm, PostGameForm, TagForm, SearchGamesForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
-from models import db, connect_db, User, Game, Like, Tag, GameUserTag
+from models import db, connect_db, User, Game, Like, Tag, GameTag, GameTagLikes
 
 CURR_USER_KEY = "curr_user"
 
@@ -130,7 +130,6 @@ def home():
     if g.user:
             games = Game.query.all()
             tags = Tag.query.all()
-
        
             return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
 
@@ -224,10 +223,11 @@ def edit_game(game_id):
 
     if form.validate_on_submit():
         game.pgn = form.pgn.data
+        game.title = form.title.data
         db.session.commit()
         
         flash('pgn updated', 'success')
-        return redirect(f'/games/game/{game_id}')
+        return redirect(f'/games/{g.user.id}')
 
     return render_template('users/post_game.html', form=form, user=g.user)
 
@@ -241,6 +241,7 @@ def add_game():
         return redirect("/")
 
     form = PostGameForm()
+    tags = Tag.query.all()
 
     if form.validate_on_submit():
         pgn = form.pgn.data
@@ -253,7 +254,7 @@ def add_game():
         flash('game added')
         return redirect(f'/games/{g.user.id}')
 
-    return render_template('users/post_game.html', form=form, user=g.user)
+    return render_template('users/post_game.html', form=form, user=g.user, tags=tags)
 
 @app.route('/games/find', methods=['GET', 'POST'])
 def find_games():
@@ -277,8 +278,9 @@ def find_games():
 
 @app.route('/games/import', methods=['GET', 'POST'])
 def import_game():
-    pgn_data = request.form['pgn']
-
+    if request.form['pgn']:
+        pgn_data = request.form['pgn']
+    
     game = Game(pgn=pgn_data)
     form = PostGameForm(obj=game)
 
@@ -286,6 +288,8 @@ def import_game():
      
         pgn = form.pgn.data
         title = form.title.data
+    
+        
         game = Game(pgn=pgn, user_id=g.user.id, title=title)
         db.session.add(game)
         db.session.commit()
@@ -294,7 +298,7 @@ def import_game():
         return redirect('/')
 
 
-    return render_template('users/post_game.html', form=form, user=g.user)
+    return render_template('users/post_game.html', form=form, user=g.user, tags=Tag.query.all())
 
 
 
@@ -303,9 +307,8 @@ def import_game():
 
 @app.route('/likes')
 def show_user_likes():
-    breakpoint()
     games = g.user.likes
-    return render_template ('home.html', games=games, user=g.user, likes = g.user.likes)
+    return render_template ('/users/likes.html', games=games, user=g.user, likes = g.user.likes)
 
 
 
@@ -388,30 +391,56 @@ def tag_game(game_id):
         print('TAGGING')
         tag_id = int(request.form.get('tags'))
         user_id = g.user.id
+        game_tag = GameTag.query.filter(GameTag.tag_id == tag_id and GameTag.game_id == game_id).first()
 
-        gameUserTag = GameUserTag(user_id=user_id, game_id=game_id, tag_id=tag_id)
-        db.session.add(gameUserTag)
-        db.session.commit()
+        if game_tag not in GameTag.query.filter(GameTag.game_id == game_id).all():
+          
+            game_tag = GameTag(game_id = game_id, tag_id=tag_id)
+            db.session.add(game_tag)
+            db.session.commit()
+            game_tag_like = GameTagLikes(game_tag_id=game_tag.id, user_id = user_id)
+            db.session.add(game_tag_like)
+            db.session.commit()
 
-        flash('post tagged', 'success')
+            flash('tag created and upvoted')
+            return redirect (request.referrer)
+
+        game_tag_like = GameTagLikes.query.filter_by(game_tag_id=game_tag.id, user_id=user_id).first()
+     
+        if not game_tag_like:
+            game_tag_like = GameTagLikes(game_tag_id = game_tag.id, user_id = user_id)
+            db.session.add(game_tag_like)
+            db.session.commit()
+
+            flash('tag upvoted')
+            return redirect (request.referrer)
+        
+        if int(game_tag_like.user_id) == int(g.user.id):
+            db.session.delete(game_tag_like)
+            db.session.commit()
+
+            flash('tag upvote removed')
+            return redirect(request.referrer)
+        else:
+            flash('nothing happened?')
+            return redirect(request.referrer)
+    if not g.user.id:
+        flash('access unauthorized')
         return redirect(request.referrer)
-    
-    flash('access unauthorized')
-    return redirect(request.referrer)
 
 
 @app.route('/games/search_by_tag')
 def search_by_tag():
     tag_id = request.args['tag_id']
     games = []
-
+    tags = Tag.query.all()
     for game in Game.query.all():
   
-        for item in game.game_user_tags:
-            if int(tag_id) == item.tag_id:
+        for item in game.game_tags:
+            if int(tag_id) == item.tags.id:
                 games.append(game)
                 break
-    return render_template('home.html', games=games, user = g.user)
+    return render_template('home.html', user=g.user, games=games, likes=g.user.likes, tags=tags)
 
     
 ####################################################################

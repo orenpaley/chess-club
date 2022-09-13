@@ -1,10 +1,12 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
+
+{% block modal %}
+{% endblock %}
+
 <div class="jumbotron">
-  <h4>Hey <strong>{{user.username}}</strong>, here are your posts.</h4>
+  <h3>My Likes</h3>
 </div>
-
-
-
 
 {% for game in games %}
 <div class="card mx-auto" style="width: 35%; padding: 1%;">
@@ -63,9 +65,9 @@
   </div>
 
   <div class="card-body">
-    {% for tag in game.game_tags %}
+    {% for item in game.game_user_tags %}
  
-    <btn id='game-tag' class="btn btn-info tag-info" aria-disabled><strong>{{tag.tags.name}}</strong>: {{tag.game_tag_likes | count }}</btn>
+    <btn id='game-tag' class="btn btn-info tag-info" aria-disabled><strong>{{item.tags.name}}</strong>:tagged by {{item.game_user_tags | count}}</btn>
     
    
 {% endfor %}
@@ -90,10 +92,9 @@
   <a href="/games/game/{{game.id}}" class="btn btn-primary" role="button">View Game</a>
 
   {% if game.user_id == user.id %}
-    <form method="post" action="/games/game/{{game.id}}/delete">
+    <form method="post" action="/games/game/{{game_id}}/delete>">
       <button class='btn btn-danger'>Delete Game</button>
     </form>
-    <a href="/games/game/{{game.id}}/edit" class="btn btn-secondary">Edit Game</a>
   {% endif %}
 </p>
 </div>
@@ -102,10 +103,19 @@
 
 {% endfor %}
 
-<form action="/games/new">
-  <button class="btn btn-success" action="/games/new">Add A Game</button>
-</form>
+{% include 'footer.html' %}
 
-
-
+<script>
+  $('.tag-post').click(function(){
+    if (window.confirm('Are you sure you want to tag this game?') == true) {
+      console.log('TRUUUEEE')
+    }
+    else {
+      console.log('FALLLSEEEEEE')
+      window.location.reload()
+    }
+  
+  })
+</script>
 {% endblock %}
+

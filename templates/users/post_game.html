@@ -13,6 +13,17 @@
         {{ field(placeholder=field.label.text, class="form-control") }}
       {% endfor %}
 
+      <h3>Tag Your Post!</h3>
+
+      {% for tag in tags %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="{{tag.name}}" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+          {{tag.name}}
+        </label>
+      </div>
+      {% endfor %}
+
       <button class="btn btn-warning">Import/Update PGN</button>
     </form>
 </div>

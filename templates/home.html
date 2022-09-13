@@ -5,55 +5,65 @@
 {% endblock %}
 
 {% for game in games %}
-<div class="card w-75 mx-auto">
+<div class="card mx-auto" style="width: 35%; padding: 1%;">
   <div class="card-body">
-    <h5 class="card-title">{{game.title}}</h5> 
-    <span>
-    
-          <div class="container position-relative">
-  
-          <div class="row align-items-start">
-            <div class="col-5">
-            <form method="post" action="/users/add_like/{{game.id}}">
-            <button class="btn btn-light">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
-              <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-            </svg>
-            </button>
-            </form>
-        </div>
-        <div class="row like-counter">
-        <div class="col-5" id="likeCounter">
-          {{ game.likes | count }}
-        </div>
-        
-        </div>
+    <div class="card-title">
+      <div class="container">
+      <div class="row">
+      <div class="col-sm-3">
+
         <div class="row align-items-start">
-          <form method="post" action="/users/delete_like/{{game.id}}">
+          <div class="col-5">
+          <form method="post" action="/users/add_like/{{game.id}}">
           <button class="btn btn-light">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-              <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+            <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+          </svg>
           </button>
           </form>
       </div>
-    </div>
-
-        </div>
+      <div class="row like-counter">
+      <div class="col-5" id="likeCounter">
+        {{ game.likes | count }}
       </div>
-      </button>
-      </form>
-    </span>
-    <p class="card-text">
-      <ct-pgn-viewer board-actions-menu-direction="under">
+      
+      </div>
+      <div class="row align-items-start">
+        <form method="post" action="/users/delete_like/{{game.id}}">
+        <button class="btn btn-light">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+            <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+          </svg>
+        </button>
+        </form>
+    </div>
+  </div>
+
+      </div>
+    </button>
+    </form>
+    <div class="col align-self-center">
+      <h5>{{game.title}}</h5>
+      <h6 style="font-size: 14px">Posted By {{game.users.username}}</h6>
+    </div>
+  </div>
+</div>
+      </div>
+    </div> 
+
+    
+          <div class="container position-relative">
+  
+    <div class="center card-text justify-content-center">
+      <ct-pgn-viewer board-actions-menu-direction="under" move-list-position="under">
       {{game.pgn}}
       </ct-pgn-viewer></p>
   </div>
 
   <div class="card-body">
-    {% for item in game.game_user_tags %}
+    {% for tag in game.game_tags %}
  
-    <btn id='game-tag' class="btn btn-info tag-info" aria-disabled><strong>{{item.tags.name}}</strong>:tagged by {{item.game_user_tags | count}}</btn>
+    <btn id='game-tag' class="btn btn-info tag-info" aria-disabled><strong>{{tag.tags.name}}</strong>: {{tag.game_tag_likes | count }}</btn>
     
    
 {% endfor %}
@@ -78,15 +88,13 @@
   <a href="/games/game/{{game.id}}" class="btn btn-primary" role="button">View Game</a>
 
   {% if game.user_id == user.id %}
-    <form method="post" action="/games/game/{{game_id}}/delete>">
+    <form method="post" action="/games/game/{{game.id}}/delete">
       <button class='btn btn-danger'>Delete Game</button>
     </form>
   {% endif %}
 </p>
 </div>
-  <div class="card-body">
-    <h5>Posted By {{game.users.username}}</h5>
-</div>
+
 </div>
 
 {% endfor %}
