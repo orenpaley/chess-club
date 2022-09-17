@@ -1,8 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% block modal %}
-{% endblock %}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-danger dropdown-toggle stickyButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   Sort
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="/newest">Sort By Newest</a>
+    <a class="dropdown-item" href="/oldest">Sort by Oldest</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/by_user_A_Z" class="btn btn-primary">Sort by User[A-Z]</a>
+    <a class="dropdown-item" href="/by_user_Z_A" class="btn btn-secondary">Sort by User[Z-A]</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/by_title_A_Z" >Sort by Title[A-Z]</a>
+    <a class="dropdown-item" href="/by_title_Z_A" >Sort by Title[Z-A]</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/by_most_likes" >Sort by Most Likes</a>
+    <a class="dropdown-item" href="/by_least_likes" >Sort by Least Likes</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/by_most_tags" >Sort by Most Tags</a>
+    <a class="dropdown-item" href="/by_least_tags" >Sort by Least Tags</a>
+  </div>
+</div>
+
+
 
 {% for game in games %}
 <div class="card mx-auto" style="width: 35%; padding: 1%;">
@@ -60,19 +82,22 @@
       </ct-pgn-viewer></p>
   </div>
 
-  <div class="card-body">
-    {% for tag in game.game_tags %}
  
-    <btn id='game-tag' class="btn btn-info tag-info" aria-disabled><strong>{{tag.tags.name}}</strong>: {{tag.game_tag_likes | count }}</btn>
-    
-   
-{% endfor %}
- 
-    <form action="/games/game/{{game.id}}/tag" method="post">
+
+      {% for tag in game.game_tags %}
+      {% if tag.game_tag_likes | count > 0 %}
+        <btn class="btn btn-warning">
+          <p><strong>{{tag.tags.name}}</strong>: {{tag.game_tag_likes | count }}</p>
+         </btn>
+      {% endif %}
+      {% endfor %}
+
+    <div class="card-body">
+    <form method="post" action="/games/game/{{game.id}}/tag">
       <div>
-          <select class="browser-default custom-select" name=tags method="POST" action="/" >
+          <select class="browser-default custom-select" method="post" name="tags">
               {% for tag in tags %}
-              <option value= "{{tag.id}}" SELECTED>{{tag.name}}</option>"
+              <option name="tags" value="{{tag.id}}" SELECTED>{{tag.name}}</option>"
               {% endfor %}
           </select>
       </div>
@@ -101,16 +126,4 @@
 
 {% include 'footer.html' %}
 
-<script>
-  $('.tag-post').click(function(){
-    if (window.confirm('Are you sure you want to tag this game?') == true) {
-      console.log('TRUUUEEE')
-    }
-    else {
-      console.log('FALLLSEEEEEE')
-      window.location.reload()
-    }
-  
-  })
-</script>
 {% endblock %}

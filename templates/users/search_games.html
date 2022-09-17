@@ -1,8 +1,10 @@
 {% extends 'base.html' %} {% block content %}
 
 <form action="/games/import" method="post">
-{% for game in json_games %}
-<div class="form-check">
+  <div class="d-flex flex-row">
+{% for game in json_games[offset:limit] %}
+<div class="p-2 pl-3 ml-5">
+<div class="form-check ml-5">
   <input class="form-check-input" type="radio" name="pgn" id="flexRadioDefault1" value="{{game['pgn']}}">
   <label class="form-check-label" for="flexRadioDefault1">
     {{game['white']['username']}} vs {{game['black']['username']}}</li>
@@ -11,8 +13,17 @@
   </ct-pgn-viewer>
   </label>
 </div>
+</div>
 {% endfor %}
+
+</div>
+<div class="d-flex flex-row">
+<div class="p-3 fixed-bottom">
 <button type="submit">Submit</button>
+</div>
+</div>
 </form>
+
+
 
 {% endblock %}

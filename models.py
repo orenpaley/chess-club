@@ -100,12 +100,7 @@ class User(db.Model):
         db.Text,
         default="/static/images/default-pic.png",
     )
-
-    header_image_url = db.Column(
-        db.Text,
-        default="/static/images/warbler-hero.jpg"
-    )
-
+    
     location = db.Column(
     db.Text,
     nullable=True
@@ -203,29 +198,11 @@ class Game(db.Model):
         nullable=False
     )
 
-    event = db.Column(
-        db.String(50)
-    )
-
     timestamp = db.Column(
     db.DateTime,
     nullable=False,
     default=datetime.utcnow(),
     )
-
-    white = db.Column(
-        db.String(50), 
-        nullable=False, 
-        default='???'
-    )
-
-    black = db.Column(
-    db.String(50), 
-    nullable=False, 
-    default='???'
-    )
-
-    result = db.Integer()
 
     likes = db.relationship('Like', backref='games')
    

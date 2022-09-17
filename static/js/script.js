@@ -1,12 +1,5 @@
 console.log("JAVASCRIPT IS HERE!!")
 
-$(document).ready(function(){
-  $('.tag-info').click(function(){
-    console.log('TAG CLICKED!!!!!')
-    window.alert('Tag clicked')
-  });
- 
-})
 
 
 

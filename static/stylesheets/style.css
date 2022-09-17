@@ -2,6 +2,11 @@
 
 body {
   background-color: #e6ecf0;
+
+}
+
+body:first-of-type {
+  margin-top: 25px;
 }
 
 body.error-404 {
@@ -27,7 +32,7 @@ body.error-404 {
   height: 46px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   margin-bottom: 1rem;
-  position: relative;
+  position: fixed;
   z-index: 9999;
 }
 
@@ -578,4 +583,33 @@ ct-pgn-viewer.ct-pgn-viewer move-list {
 
 textarea {
   height: 250px;
+}
+
+.user-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.nav-user-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.p-2:first-of-type {
+
+  margin-left: 91px;
+}
+
+.stickyButton {
+  position: fixed !important;
+  top: 101px;
+  left: 99px;
+  width: 150px;
+}
+
+
+body:nth-child(2) {
+  margin-top: 68px;
 }

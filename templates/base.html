@@ -40,13 +40,13 @@ rel="stylesheet" crossorigin>
 
       <!-- ### NAV ### -->
 {% if g.user %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <a class="navbar-brand" href="#">Chess Club</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
+        <div class="navbar-nav d-lg-flex align-items-center">
           <a class="nav-item nav-link" href="/">Home</a>
           <!-- <a class="nav-item nav-link" href="#">Friends</a> -->
           <a class="nav-item nav-link" href="/games/{{g.user.id}}">My Games</a>
@@ -54,6 +54,7 @@ rel="stylesheet" crossorigin>
           <a class="nav-item nav-link" href="/games/find">Find Games</a>
           <a class="nav-item nav-link" href="/tags">Tags</a>
           <a class="nav-item nav-link" href="/likes">Liked Games</a>
+          <a class="nav-item nav-link" href="/users/me"><img class="nav-user-icon" src="{{g.user.image_url}}"></a>
           <a class="nav-item nav-link" href="/logout">Logout</a>
         </div>
       </div>

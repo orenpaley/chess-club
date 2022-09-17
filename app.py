@@ -9,7 +9,7 @@ import requests
 
 from datetime import datetime
 
-from forms import RegisterForm, LoginForm, PostGameForm, TagForm, SearchGamesForm
+from forms import RegisterForm, LoginForm, PostGameForm, TagForm, SearchGamesForm, UserProfileForm
 
 # from forms import EditProfileForm, UserAddForm, LoginForm, MessageForm
 from models import db, connect_db, User, Game, Like, Tag, GameTag, GameTagLikes
@@ -126,6 +126,7 @@ def logout():
 
 @app.route('/', methods=['GET','POST'])
 def home():
+    """ Renders homepage view game posts"""
 
     if g.user:
             games = Game.query.all()
@@ -135,7 +136,169 @@ def home():
 
     return redirect('/signup')
 
+@app.route('/newest')
+def home_sort_newest():
+    """sorts homepage by newest post"""
+    if g.user:
+        games = Game.query.order_by(Game.timestamp.desc()).all()
+        tags = Tag.query.all()
+    
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/oldest')
+def home_sort_oldest():
+    """sorts homepage by oldest post"""
+
+    if g.user:
+        games = Game.query.order_by(Game.timestamp).all()
+        tags = Tag.query.all()
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
  
+
+@app.route('/by_user_A_Z')
+def home_sort_user_a_z():
+    """sorts homepage by user a first"""
+
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_username(e):
+            return e.users.username
+
+        games.sort(key=sort_by_username)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_user_Z_A')
+def home_sort_user_z_a():
+    """sorts homepage by user a last"""
+
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_username(e):
+            return e.users.username
+
+        games.sort(key=sort_by_username, reverse=True)
+
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_title_A_Z')
+def home_sort_title_a_z():
+    """sorts homepage by post title a first"""
+
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_title(e):
+            return e.title.lower()
+        
+        games.sort(key=sort_by_title)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_title_Z_A')
+def home_sort_title_z_a():
+    """sorts homepage by title a last"""
+    
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_title(e):
+            return e.title.lower()
+        
+        games.sort(key=sort_by_title, reverse=True)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_most_likes')
+def home_sort_most_likes():
+    """sorts homepage by most likes"""
+    
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_most_likes(e):
+            return len(e.likes)
+        
+        games.sort(key=sort_by_most_likes, reverse=True)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_least_likes')
+def home_sort_least_likes():
+    """sorts homepage by most likes"""
+    
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_least_likes(e):
+            return len(e.likes)
+        
+        games.sort(key=sort_by_least_likes)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_most_tags')
+def home_sort_most_tags():
+    """sorts homepage by most unique tags"""
+    
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_most_tags(e):
+            return len(e.game_tags)
+        
+        games.sort(key=sort_by_most_tags, reverse=True)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+@app.route('/by_least_tags')
+def home_sort_least_tags():
+    """sorts homepage by most unique tags"""
+    
+    if g.user:
+        games = Game.query.all()
+        tags = Tag.query.all()
+
+        def sort_by_least_tags(e):
+            return len(e.game_tags)
+        
+        games.sort(key=sort_by_least_tags)
+
+        return render_template("home.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
+
+    return redirect('/signup')
+
+
+
 ##############################################################################
 ## Users ###
 
@@ -155,23 +318,26 @@ def list_users():
 
     return render_template('users/index.html', users=users)
 
+@app.route('/users/me', methods=['GET', 'POST'])
+def edit_user_profile():
+    form = UserProfileForm(obj=g.user)
+    user = g.user
 
-# @app.route('/users/<int:user_id>')
-# def users_show(user_id):
-#     """Show user profile."""
+    if g.user:
+        if form.validate_on_submit():
+            user.first_name = form.first_name.data 
+            user.last_name = form.last_name.data
+            user.email = form.email.data
+            user.location = form.location.data
+            user.bio = form.bio.data
 
-#     user = User.query.get_or_404(user_id)
-#     likes = Likes.query.filter_by(user_id=user_id).all()
+            db.session.commit()
 
-#     # snagging messages in order from the database;
-#     # user.messages won't be in order by default
-#     messages = (Message
-#                 .query
-#                 .filter(Message.user_id == user_id)
-#                 .order_by(Message.timestamp.desc())
-#                 .limit(100)
-#                 .all())
-#     return render_template('users/show.html', user=user, messages=messages)
+            flash('profile updated', 'success')
+            return redirect(request.referrer)
+        
+        return render_template('users/my_profile.html', user=g.user, form=form)
+
 
 ####################################################################
 ### GAME ROUTES ####
@@ -205,7 +371,7 @@ def delete_game(game_id):
     """delete a game by user"""
 
     game = Game.query.get_or_404(game_id)
-    if g.user.id == game.user_id:
+    if int(g.user.id) == int(game.user_id):
         db.session.delete(game)
         db.session.commit()
         
@@ -252,7 +418,7 @@ def add_game():
         db.session.commit()
 
         flash('game added')
-        return redirect(f'/games/{g.user.id}')
+        return render_template('users/tag_new_game.html', tags=tags, game=game, user = g.user)
 
     return render_template('users/post_game.html', form=form, user=g.user, tags=tags)
 
@@ -263,16 +429,21 @@ def find_games():
     if form.validate_on_submit():
         print('form validating')
 
-        base_url = 'https://api.chess.com/pub/player/'
-        footer_url = f'/games/{datetime.now().year}/{datetime.now().strftime("%m")}'
-        username = form.search.data
-        url = f'{base_url}{username}{footer_url}'
+        base_url = 'https://api.chess.com/pub/player'
+        username = form.username.data
+        year = form.year.data
+        month = form.month.data
+        offset = form.offset.data
+        limit = form.limit.data
+
+
+        url = f'{base_url}/{username}/games/{year}/{month:02d}'
 
         resp = requests.get(url=url)
         data = resp.json()
         json_games= data['games']
     
-        return render_template('users/search_games.html', json_games=json_games)
+        return render_template('users/search_games.html', json_games=json_games, offset=offset, limit=offset+limit)
 
     return render_template('users/find_games.html', form=form, user=g.user)
 
@@ -285,7 +456,6 @@ def import_game():
     form = PostGameForm(obj=game)
 
     if form.validate_on_submit():
-     
         pgn = form.pgn.data
         title = form.title.data
     
@@ -294,11 +464,49 @@ def import_game():
         db.session.add(game)
         db.session.commit()
 
+        tags= Tag.query.all()
+        game = Game.query.get_or_404(game.id)
+
         flash('imported game posted')
-        return redirect('/')
+        return render_template('users/tag_new_game.html', tags=tags, game=game, user = g.user)
 
 
     return render_template('users/post_game.html', form=form, user=g.user, tags=Tag.query.all())
+
+@app.route('/games/new/<game_id>/add_tags', methods=['POST'])
+def add_tags_to_new_game(game_id):
+
+    for tag in Tag.query.all():
+    
+        if bool(request.form.get(tag.name)) == True:
+         
+            tag_id = int(request.form.get(tag.name))
+            game_tag = GameTag(game_id=game_id, tag_id=tag_id)
+            db.session.add(game_tag)
+            db.session.commit()
+            game_tag_like = GameTagLikes(game_tag_id=game_tag.id, user_id=g.user.id)
+            db.session.add(game_tag_like)
+            db.session.commit()
+            print('game tagged HERE')
+            continue;
+       
+            
+       
+    flash('game added and tagged')
+    return redirect('/')
+
+@app.route('/games/new/<game_id>/posted/tag')
+def add_tags_to_new_post(game_id):
+
+    game = Game.query.get_or_404(game_id)
+    tags = Tag.query.all()
+
+    if request.post:
+        # tags = request.form.get('tags')
+        return redirect('/')
+
+    return render_template('tag_new_game.html', game=game, tags=tags)
+
 
 
 
@@ -394,6 +602,65 @@ def tag_game(game_id):
         game_tag = GameTag.query.filter(GameTag.tag_id == tag_id and GameTag.game_id == game_id).first()
 
         if game_tag not in GameTag.query.filter(GameTag.game_id == game_id).all():
+            
+            try:
+                game_tag = GameTag(game_id = game_id, tag_id=tag_id)
+                db.session.add(game_tag)
+                db.session.commit()
+
+            except IntegrityError:
+             
+                db.session.rollback()
+                game_tag = GameTag.query.filter_by(game_id = game_id, tag_id=tag_id).first()
+                gtl = GameTagLikes.query.filter_by(game_tag_id = game_tag.id, user_id = g.user.id).first()
+                if gtl in GameTagLikes.query.all():
+                    gtl.delete()
+                    db.session.commit()
+
+        
+                    flash('tag like removed')
+                    return redirect(request.referrer)
+
+                else:  
+                    gtl = GameTagLikes(game_tag_id=game_tag.id, user_id=g.user.id)
+                    db.session.add(gtl)
+                    db.session.commit()
+                    flash('tag created and upvoted')
+                    return redirect (request.referrer)
+            
+        game_tag_like = GameTagLikes.query.filter_by(game_tag_id=game_tag.id, user_id=user_id).first()
+        if not game_tag_like:
+            game_tag_like = GameTagLikes(game_tag_id = game_tag.id, user_id = user_id)
+            db.session.add(game_tag_like)
+            db.session.commit()
+
+            flash('tag upvoted')
+            return redirect (request.referrer)
+
+        if int(game_tag_like.user_id) == int(g.user.id):
+            db.session.delete(game_tag_like)
+            db.session.commit()
+
+            flash('tag upvote removed')
+            return redirect(request.referrer)
+        
+        else:
+            flash('nothing happened?')
+            return redirect(request.referrer)
+    if not g.user.id:
+        flash('access unauthorized')
+        return redirect(request.referrer)
+
+@app.route("/games/game/<game_id>/tag/<tag_id>", methods=['POST'])
+def tag_game_with_tag_button(game_id, tag_id):
+
+    if g.user:
+        print('TAGGING')
+        tag_id = int(tag_id)
+        user_id = g.user.id
+        game_tag = GameTag.query.filter(GameTag.tag_id == tag_id and GameTag.game_id == game_id).first()
+
+        if game_tag not in GameTag.query.filter(GameTag.game_id == game_id).all():
           
             game_tag = GameTag(game_id = game_id, tag_id=tag_id)
             db.session.add(game_tag)
@@ -428,7 +695,6 @@ def tag_game(game_id):
         flash('access unauthorized')
         return redirect(request.referrer)
 
-
 @app.route('/games/search_by_tag')
 def search_by_tag():
     tag_id = request.args['tag_id']
@@ -442,15 +708,3 @@ def search_by_tag():
                 break
     return render_template('home.html', user=g.user, games=games, likes=g.user.likes, tags=tags)
 
-    
-####################################################################
-### Modal Popups ####
-
-@app.route('/modal')
-def show_modal():
-    if g.user:
-        games = Game.query.all()
-        tags = Tag.query.all()
-                
-        return render_template("modal.html", user=g.user, games=games, likes=g.user.likes, tags=tags)
-  
