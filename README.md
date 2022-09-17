@@ -5,7 +5,7 @@
 
 ##### Chess Club is an app to share and post chess games with other chess enthusiasts. 
 
-##### This app was built with flask, python, PostgresSQL, HTML, and CSS
+##### This app was built with Flask, Python, PostgresSQL, HTML, CSS, and Bootstrap
 
 ##### This site features an API endpoint from chess.com - details at this link:
 
