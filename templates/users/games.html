@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+
+{% block title %}
+Chess Byte - View User Posted Games
+{% endblock %}
+
+{% block content %}
 <div class="jumbotron">
   <h4>Hey <strong>{{user.username}}</strong>, here are your posts.</h4>
 </div>

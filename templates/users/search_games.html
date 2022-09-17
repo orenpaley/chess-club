@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block title %}
+Chess Byte - View Search Results 
+{% endblock %}
+
+{% block content %}
 
 <form action="/games/import" method="post">
   <div class="d-flex flex-row">
@@ -7,7 +13,7 @@
 <div class="form-check ml-5">
   <input class="form-check-input" type="radio" name="pgn" id="flexRadioDefault1" value="{{game['pgn']}}">
   <label class="form-check-label" for="flexRadioDefault1">
-    {{game['white']['username']}} vs {{game['black']['username']}}</li>
+    <li>{{game['white']['username']}} vs {{game['black']['username']}}</li>
 <ct-pgn-viewer board-actions-menu-direction="under">
   {{game['pgn']}}
   </ct-pgn-viewer>

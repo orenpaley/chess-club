@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Chess Club</title>
+  <title>Chess Byte</title>
   
   <link rel="stylesheet"
         href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
@@ -24,6 +24,11 @@
 href="https://c1a.chesstempo.com/fonts/MaterialIcons-Regular.woff2"
 rel="stylesheet" crossorigin>
 
+<title>
+  {% block title %}
+  {% endblock %}
+</title>
+
 </head>
 
 <body>
@@ -41,7 +46,7 @@ rel="stylesheet" crossorigin>
       <!-- ### NAV ### -->
 {% if g.user %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <a class="navbar-brand" href="#">Chess Club</a>
+      <a class="navbar-brand" href="#">Chess Byte</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

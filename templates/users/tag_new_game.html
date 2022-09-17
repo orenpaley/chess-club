@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+
+{% block title %}
+Chess Byte - Add Tags To New Chess Post
+{% endblock %}
+
+
 {% block content %}
 <h2>Add Some Tags to your new Post</h2>
 <form method="post" action="/games/new/{{game.id}}/add_tags">

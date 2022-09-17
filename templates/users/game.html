@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block title %}
+Chess Byte - View Game
+{% endblock %}
+
+{% block content %}
 
 <h1>{{game.id}}</h1>
 {{ game.white }}
