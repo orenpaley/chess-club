@@ -7,11 +7,12 @@
 
 ##### This app was built with Flask, Python, PostgresSQL, HTML, CSS, and Bootstrap
 
-### Visit Live Site -> [chessbyte.herokuapp.com/](https://chessbyte.herokuapp.com/)
+#### Visit Live Site -
+####[chessbyte.herokuapp.com/](https://chessbyte.herokuapp.com/)
 
 ##### This site features an API endpoint from chess.com - details at this link:
 
-[https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games](https://chessbyte.herokuapp.com/)
+https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games
 
 ### Features
 
@@ -23,3 +24,7 @@
 - profile, saved games, profile image
 - login auth. w/ bcrypt
 - html board viewer courtesy of Chesstempo.com
+
+### Flow
+
+##### 1) Register an account with secure pathword auth.
