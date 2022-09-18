@@ -28,3 +28,18 @@ https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games
 ### Flow
 
 ##### 1) Register an account with secure pathword auth.
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
+![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+
