@@ -7,9 +7,11 @@
 
 ##### This app was built with Flask, Python, PostgresSQL, HTML, CSS, and Bootstrap
 
+### Visit Live Site -> [chessbyte.herokuapp.com/](https://chessbyte.herokuapp.com/)
+
 ##### This site features an API endpoint from chess.com - details at this link:
 
-https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games
+[https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games](https://chessbyte.herokuapp.com/)
 
 ### Features
 
