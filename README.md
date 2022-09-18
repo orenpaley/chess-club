@@ -29,17 +29,28 @@ https://www.chess.com/news/view/published-data-api#pubapi-endpoint-games
 
 ##### 1) Register an account with secure pathword auth.
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+![Register Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+##### 2) See other game posts from other users. Sort, like, tag, post. 
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+![Home Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/2Home.png)
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+##### 3) Find Games using external API search from chess.com. Set username, year, month, offset and limit
+![Find Games Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/3FindGames.png)
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+##### 4) Select a Game from retrieved list
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+![Select Game Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/4SelectGame.png)
 
-![alt text](https://github.com/orenpaley/chessbyte/blob/main/static/images/1RegisterDemo.png)
+##### 5) Add title and post the pgn
+
+![Game Form Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/5GameForm.png)
+
+##### 6) Tag your post with as many tags as you like. 
+
+![Game Tags Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/6GameTags.png)
+
+##### 7) Sort by Newest and see your post live on chessbyte
+
+![View Added Game and Sort Demo](https://github.com/orenpaley/chessbyte/blob/main/static/images/7SortAndViewAddedGame.png)
 
