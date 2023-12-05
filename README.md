@@ -1,14 +1,12 @@
 
-## Chess Club 
+## Chess Byte
 #### Springboard Captsone 1 Project
 ##### written by Oren Paley 2022
 
-##### Chess Club is an app to share and post chess games with other chess enthusiasts. 
+##### Chess Byte is an app to share and post chess games with other chess enthusiasts. 
 
 ##### This app was built with Flask, Python, PostgresSQL, HTML, CSS, and Bootstrap
 
-#### Visit Live Site -
-#### [chessbyte.herokuapp.com/](https://chessbyte.herokuapp.com/)
 
 ##### This site features an API endpoint from chess.com - details at this link:
 
